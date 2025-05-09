@@ -1,22 +1,22 @@
 package com.spring.ims.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.ims.entity.Product;
-import com.spring.ims.repository.ProductRepository;
+import com.spring.ims.service.ProductService;
 
-@Controller
+@RestController
 @RequestMapping("/products")
 public class ProductController {
 
     @Autowired
-    private ProductRepository productRepository;
+    private ProductService productService;
 
     @GetMapping("/addP")
     public String showAddProductForm(Model model) {
@@ -26,7 +26,7 @@ public class ProductController {
 
     @PostMapping("/add")
     public String addProduct(@ModelAttribute Product product) {
-        productRepository.save(product);
+        productService.addProduct(product);
         return "productAdd";
     }
 }

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0fdf4;
+            margin: 0;
+        }
+        .navbar {
+            background-color: #4caf50;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .navbar a:hover {
+            background-color: #388e3c;
+        }
+        .container {
+            margin: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .card {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 400px;
+            margin: 10px;
+            text-align: center;
+        }
+        h1 {
+            color: #2e7d32;
+            margin-bottom: 20px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #388e3c;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="/products/view">All Products</a>
+        <a href="/orders/previous">Previous Orders</a>
+        <a href="/cart">Cart</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="container">
+        <div class="card">
+            <h1>Welcome to User Dashboard</h1>
+            <p>Select one of the options above to explore products, view previous orders, manage your cart, or log out.</p>
+        </div>
+    </div>
+
+    <!-- All Products (This can be rendered dynamically when the "All Products" link is clicked) -->
+    <div class="container" id="viewProducts" style="display:none;">
+        <div class="card">
+            <h1>All Products</h1>
+            <!-- This is a placeholder. You would dynamically render product details here -->
+            <p>No products available yet. Add some products to your cart!</p>
+        </div>
+    </div>
+
+    <!-- Previous Orders (Placeholder view) -->
+    <div class="container" id="previousOrders" style="display:none;">
+        <div class="card">
+            <h1>Previous Orders</h1>
+            <!-- This is a placeholder. You would dynamically render order details here -->
+            <p>No previous orders. Start shopping!</p>
+        </div>
+    </div>
+
+    <!-- Cart (Placeholder view) -->
+    <div class="container" id="cart" style="display:none;">
+        <div class="card">
+            <h1>Your Cart</h1>
+            <!-- This is a placeholder. You would render cart items here -->
+            <p>Your cart is empty. Browse products to add to your cart!</p>
+        </div>
+    </div>
+
+    <script>
+        // Simple JS to toggle between different views when a link is clicked
+        document.querySelectorAll('.navbar a').forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                const target = event.target.getAttribute('href');
+                document.getElementById('viewProducts').style.display = 'none';
+                document.getElementById('previousOrders').style.display = 'none';
+                document.getElementById('cart').style.display = 'none';
+                if (target === '/products/view') {
+                    document.getElementById('viewProducts').style.display = 'block';
+                } else if (target === '/orders/previous') {
+                    document.getElementById('previousOrders').style.display = 'block';
+                } else if (target === '/cart') {
+                    document.getElementById('cart').style.display = 'block';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
