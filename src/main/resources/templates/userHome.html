@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0fdf4;
+            margin: 0;
+        }
+        .navbar {
+            background-color: #4caf50;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 20px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .navbar a:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            flex: 1 1 350px;
+            min-width: 300px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+        h1 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+        p {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+		<a href="/userHome"><h2>User Dashboard</h2></a>
+        <a href="/products/view">All Products</a>
+        <a href="/orders/previous">Previous Orders</a>
+        <a href="/cart">Cart</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="container">
+        <div class="card">
+            <h1><span th:text="${user.name}"></span>, Welcome to User Dashboard</h1>
+            <p>Your number is: <span th:text="${user.contact}"></span></p>
+            <p>Select one of the options above to explore products, view previous orders, manage your cart, or log out.</p>
+        </div>
+    </div>
+
+
+
+</body>
+</html>

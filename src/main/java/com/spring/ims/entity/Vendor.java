@@ -17,14 +17,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 //@Builder
-@Table(name="imsuser")
-public class User {
+@Table(name="imsvendor")
+public class Vendor {
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
 	private String name;
-	private String email;
+	private String location;
 	private String contact;
-	private String password;
-
 }
