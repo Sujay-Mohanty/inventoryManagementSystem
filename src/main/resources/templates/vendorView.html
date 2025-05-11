@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Vendors - Admin Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .navbar {
+            background-color: #4caf50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h2 {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 18px;
+            border-radius: 30px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .navbar a:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
+
+        .navbar a.active {
+            background-color: #2e7d32;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2e7d32;
+            margin-bottom: 24px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-edit {
+            background-color: #1976d2;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #1565c0;
+        }
+
+        .btn-delete {
+            background-color: #d32f2f;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #b71c1c;
+        }
+
+        .add-button {
+            margin-top: 20px;
+            padding: 12px 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .add-button:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="/admin/adminHome"><h2>Admin Dashboard</h2></a>
+        <div class="navbar-links">
+            <a href="/admin/purchase">Make Purchase</a>
+            <a href="/products">View All Products</a>
+            <a href="/invoices">View Invoices</a>
+            <a href="/admin/vendor" class="active">Vendors</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Vendors List</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Vendor Name</th>
+                    <th>Contact</th>
+                    <th>Location</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="vendor : ${vendors}">
+                    <td th:text="${vendor.id}">1</td>
+                    <td th:text="${vendor.name}">Sample Vendor</td>
+                    <td th:text="${vendor.contact}">1234567890</td>
+                    <td th:text="${vendor.location}">City Name</td>
+                    <td class="action-buttons">
+                        <a th:href="@{'/admin/vendor/edit/' + ${vendor.id}}">
+                            <button class="btn btn-edit">Edit</button>
+                        </a>
+                        <form th:action="@{'/admin/vendor/delete/' + ${vendor.id}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-delete">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="/admin/vendor/add">
+            <button class="add-button">+ Add New Vendor</button>
+        </a>
+    </div>
+</body>
+</html>

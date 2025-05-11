@@ -1,5 +1,7 @@
 package com.spring.ims.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,5 +20,8 @@ public class VendorService {
 	}
 	public Vendor findVendorByName(String vendorName) {
 		return vendorRepository.findByName(vendorName);
+	}
+	public List<Vendor> viewAll(){
+		return vendorRepository.findAll();
 	}
 }
