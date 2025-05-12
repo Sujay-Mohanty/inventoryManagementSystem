@@ -50,7 +50,7 @@ public class AdminController {
 	    Vendor vendor = vpDTO.getVendor();
 	    Product product = vpDTO.getProduct();
 	    vendorService.addVendor(vendor);
-	    product.setVendor_id(vendorService.findVendorByName(vendor.getName()).getId());
+//	    product.setVendor_id(vendorService.findVendorByName(vendor.getName()).getId());
 	    productService.addProduct(product);
 		
 		//product.setVendor_id(vendorService.findVendorByName(vendor.getName()).getId());
