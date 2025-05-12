@@ -22,15 +22,15 @@ import lombok.Setter;
 //@Builder
 @Table(name="imsvendor")
 public class Vendor {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long id;
-	private String name;
-	private String location;
-	private String contact;
-	
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name = "product_id", referencedColumnName = "id")
-	private Product product;
+    private String name;
+    private String location;
+    private String contact;
+
+    @OneToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    private Product product;
 }

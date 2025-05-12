@@ -1,13 +1,14 @@
 package com.spring.ims.entity;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -16,39 +17,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
+@Entity
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 //@Builder
-@Entity
-@Table(name="imsprod")
-public class Product {
+@Table(name="imscart")
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String name;
-    private String description;
-    private int quantity;
-    private double price;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
-    private Vendor vendor;
-
-    @ManyToMany(mappedBy = "products")
-    private List<Cart> carts;
-
-    @ManyToMany(mappedBy = "products")
-    private List<Order> orders;
-
-    @ManyToMany(mappedBy = "products")
-    private List<Invoice> invoices;
+    @ManyToMany
+    @JoinTable(
+        name = "cart_products",
+        joinColumns = @JoinColumn(name = "cart_id"),
+        inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> products = new ArrayList<>();
 }
-
-	
-
-	
-	
-	
-	

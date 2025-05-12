@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Make Purchase Order</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+
+        .navbar {
+            background-color: #4caf50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h2 {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 18px;
+            border-radius: 30px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .navbar a:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .container h1 {
+            text-align: center;
+            color: #2e7d32;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            font-weight: 500;
+        }
+
+        select,
+        input[type="text"],
+        input[type="number"],
+        input[type="datetime-local"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+
+        .readonly-fields {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .readonly-fields input {
+            background-color: #e8f5e9;
+            border: none;
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 30px;
+            width: 100%;
+            padding: 14px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<div class="navbar">
+    <a href="/admin/adminHome"><h2>Admin Dashboard</h2></a>
+    <div class="navbar-links">
+        <a href="/admin/purchase">Make Purchase</a>
+        <a href="/products">View All Products</a>
+        <a href="/invoices">View Invoices</a>
+        <a href="/admin/vendor">Vendors</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <h1>Create Purchase Order</h1>
+
+    <form th:action="@{/admin/purchase/add}" method="post">
+        <label for="vendor">Select Vendor</label>
+        <select id="vendor" name="vendorId" onchange="updateProductFields()" required>
+			<option value="">-- Choose Vendor --</option>
+			<option th:each="vendor : ${vendors}" 
+			        th:value="${vendor.id}" 
+			        th:attr="data-productname=${vendor.product.name}, data-productdesc=${vendor.product.description}"
+			        th:text="${vendor.name}">
+			</option>
+        </select>
+
+        <div class="readonly-fields">
+            <label for="productName">Product Name</label>
+            <input type="text" id="productName" name="productName" readonly>
+
+            <label for="productDesc">Product Description</label>
+            <input type="text" id="productDesc" name="productDesc" readonly>
+        </div>
+
+        <label for="purchaseDate">Purchase Date</label>
+        <input type="datetime-local" id="purchaseDate" name="purchaseDate" required>
+
+        <label for="quantity">Quantity</label>
+        <input type="number" id="quantity" name="quantity" min="1" required>
+
+        <label for="price">Unit Price</label>
+        <input type="number" id="price" name="price" min="0" step="0.01" required>
+
+        <button type="submit">Create Purchase Order</button>
+    </form>
+</div>
+
+<script>
+/**	function updateProductFields() {
+	        const vendorSelect = document.getElementById("vendor");
+	        const selectedVendorId = vendorSelect.value;
+
+	        if (selectedVendorId) {
+	            // Make an AJAX request to get the product associated with the selected vendor
+	            fetch(`/admin/vendor/${selectedVendorId}/product`)
+	                .then(response => response.json())
+	                .then(product => {
+	                    // If a product is found, update the product name and description fields
+	                    if (product) {
+	                        document.getElementById("productName").value = product.name || '';
+	                        document.getElementById("productDesc").value = product.description || '';
+	                    }
+	                })
+	                .catch(error => {
+	                    console.error("Error fetching product details:", error);
+	                });
+	        } else {
+	            // Clear the product fields if no vendor is selected
+	            document.getElementById("productName").value = '';
+	            document.getElementById("productDesc").value = '';
+	        }
+	    }
+		
+		**/
+		document.addEventListener("DOMContentLoaded", function () {
+		        document.getElementById("vendor").addEventListener("change", updateProductFields);
+		    });
+
+		    function updateProductFields() {
+		        const select = document.getElementById("vendor");
+		        const selectedOption = select.options[select.selectedIndex];
+
+		        document.getElementById("productName").value = selectedOption.getAttribute("data-productname") || '';
+		        document.getElementById("productDesc").value = selectedOption.getAttribute("data-productdesc") || '';
+		    }
+</script>
+
+</body>
+</html>
