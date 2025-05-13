@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.spring.ims.entity.User;
 import com.spring.ims.service.UserService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/")
 public class CentralController {
@@ -36,19 +38,20 @@ public class CentralController {
 		return "login";
 	}
 	
-	@PostMapping("/loginVal")
-	public String loginValidation(@ModelAttribute User user,Model model) {
-		User usernow=userService.findByEmailAndPassword(user);
-		if(usernow !=null)
-		{	model.addAttribute("user",usernow); 
-		return "userHome";
-		}
-		else if(user.getEmail().equals("admin@gmail.com")&user.getPassword().equals("admin"))
-			return "adminHome";
-		else
-			return "redirect:/login";
-		
-	}
+@PostMapping("/loginVal")
+public String loginValidation(@ModelAttribute User user, Model model, HttpSession session) {
+    User usernow = userService.findByEmailAndPassword(user);
+    
+    if (usernow != null) {
+        session.setAttribute("loggedInUser", usernow);  // ✅ Store user in session
+        return "redirect:/user/userHome";
+    } else if ("admin@gmail.com".equals(user.getEmail()) && "admin".equals(user.getPassword())) {
+        session.setAttribute("admin", "admin"); // optional admin flag
+        return "redirect:/admin/adminHome";
+    } else {
+        return "redirect:/login?error=true";
+    }
+}
 	
 
 	
