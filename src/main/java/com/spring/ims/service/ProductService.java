@@ -1,5 +1,7 @@
 package com.spring.ims.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,4 +18,8 @@ public class ProductService {
 	
 	public Product addProduct(Product P) {
 		return repository.save(P);}
+	
+	public List<Product> viewAll(){
+		return repository.findAll();
+		}
 }

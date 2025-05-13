@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.spring.ims.dto.VendorProductDTO;
 import com.spring.ims.entity.Invoice;
@@ -82,6 +83,18 @@ public class AdminController {
 		model.addAttribute("vendors",vendors);
 		return "vendorView";
 	}
+    @PostMapping("/vendor/delete/{id}")
+    public String deleteVendor(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        // Optional: Check if the vendor exists
+    	 System.out.println("Deleting vendor with ID: " + id);
+        if (vendorService.vendorExistsById(id)) {
+            vendorService.deleteById(id);
+            redirectAttributes.addFlashAttribute("success", "Vendor deleted successfully.");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Vendor not found.");
+        }
+        return "redirect:/admin/vendor/view";
+    }
 	 @GetMapping("/purchase")
 	    public String showPurchaseForm(Model model) {
 	        model.addAttribute("vendors", vendorService.viewAll());
@@ -125,5 +138,12 @@ public class AdminController {
 	    public String deleteInvoice(@PathVariable Long id) {
 	        invoiceService.deleteById(id);
 	        return "redirect:/admin/invoices";
+	    }
+	    
+	    @GetMapping("/products")
+	    public String viewAllProducts(Model model) {
+	        List<Product> products = productService.viewAll();
+	        model.addAttribute("products", products);
+	        return "viewProducts";
 	    }
 }

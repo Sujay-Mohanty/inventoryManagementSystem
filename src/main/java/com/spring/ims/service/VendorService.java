@@ -28,5 +28,11 @@ public class VendorService {
 	public Optional<Vendor> findById(Long vendorId) {
 		return vendorRepository.findById(vendorId);
 	}
+    public boolean vendorExistsById(Long id) {
+        return vendorRepository.existsById(id);
+    }
+    public void deleteById(Long id) {
+    	vendorRepository.deleteById(id);
+    }
 
 }
