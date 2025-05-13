@@ -30,7 +30,7 @@ public class Vendor {
     private String location;
     private String contact;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 }

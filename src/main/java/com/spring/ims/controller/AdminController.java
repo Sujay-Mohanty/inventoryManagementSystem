@@ -89,6 +89,7 @@ public class AdminController {
     	 System.out.println("Deleting vendor with ID: " + id);
         if (vendorService.vendorExistsById(id)) {
             vendorService.deleteById(id);
+            System.out.println("Deleted vendor : " + id);
             redirectAttributes.addFlashAttribute("success", "Vendor deleted successfully.");
         } else {
             redirectAttributes.addFlashAttribute("error", "Vendor not found.");
