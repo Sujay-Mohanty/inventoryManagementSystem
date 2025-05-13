@@ -1,7 +1,10 @@
 package com.spring.ims.controller;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.ims.dto.VendorProductDTO;
+import com.spring.ims.entity.Invoice;
 import com.spring.ims.entity.Product;
 import com.spring.ims.entity.Vendor;
 import com.spring.ims.service.InvoiceService;
@@ -100,5 +104,26 @@ public class AdminController {
 	        return vendorService.findById(vendorId)
 	                .map(vendor -> ResponseEntity.ok(vendor.getProduct()))
 	                .orElse(ResponseEntity.notFound().build());
+	    }
+	    @GetMapping("/invoices")
+	    public String viewInvoices(Model model) {
+	        List<Invoice> invoices = invoiceService.findAll();
+
+	        // Format each invoice's dateTime to a string
+	        List<Map<String, Object>> invoiceData = invoices.stream().map(invoice -> {
+	            Map<String, Object> map = new HashMap<>();
+	            map.put("invoice", invoice);
+	            map.put("formattedDate", invoice.getDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+	            return map;
+	        }).toList();
+
+	        model.addAttribute("invoiceData", invoiceData);
+	        return "viewInvoices";
+	    }
+
+	    @PostMapping("/invoice/delete/{id}")
+	    public String deleteInvoice(@PathVariable Long id) {
+	        invoiceService.deleteById(id);
+	        return "redirect:/admin/invoices";
 	    }
 }

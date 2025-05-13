@@ -2,6 +2,7 @@ package com.spring.ims.service;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,4 +50,11 @@ public class InvoiceService {
 
         invoiceRepository.save(invoice);
     }
+
+	public List<Invoice> findAll() {
+		return invoiceRepository.findAll();
+	}
+	public void deleteById(long id) {
+		invoiceRepository.deleteById(id);
+	}
 }
