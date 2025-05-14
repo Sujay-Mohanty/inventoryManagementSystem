@@ -1,149 +1,225 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f9f9f9;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
             color: #333;
+            margin: 0;
+            overflow-x: hidden;
         }
-
-        .navbar {
-            background-color: #4caf50;
+        .sidebar {
+			background: linear-gradient(180deg, #1a472a 0%, #2e7d32 100%);
+			transition: transform 0.3s ease-in-out;
+			z-index: 20;
+			position: fixed;
+			top: 0;
+			left: 0;
+			height: 100vh;
+			width: 256px;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .main-content {
+            background: #f5f5f5;
+            min-height: 100vh;
+            margin-left: 256px;
+            position: relative;
+            z-index: 10;
+        }
+        .card {
+            transition: all 0.3s ease;
+            background-color: #ffffff;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .welcome-header {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .divider {
+            border-top: 1px solid #ffffff;
+            margin: 1rem 0;
+        }
+        .stat-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .stat-icon {
+            color: #1a472a;
+            font-size: 1.5rem;
+        }
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1rem 2rem;
+            background-color: #ffffff;
+            margin-left: 256px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: calc(100% - 256px);
+            z-index: 15;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
-
-        .navbar h2 {
-            color: #fff;
-            font-weight: 500;
+        .app-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a472a;
         }
-
-        .navbar-links {
+        .user-info {
             display: flex;
-            gap: 20px;
+            align-items: center;
+            gap: 0.5rem;
         }
-
-        .navbar a {
+        .user-avatar {
+            background-color: #1a472a;
             color: #fff;
-            text-decoration: none;
-            font-size: 16px;
-            padding: 10px 18px;
-            border-radius: 30px;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        .navbar a:hover {
-            background-color: #388e3c;
-            transform: translateY(-2px);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
             display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
+            align-items: center;
             justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
         }
-
-        .card {
-            background: #fff;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            transition: transform 0.3s;
+        .logo-icon {
+            color: #ffffff;
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
         }
-
-        .card:hover {
-            transform: translateY(-5px);
+        .sidebar-text {
+            color: #ffffff;
         }
-
-        h1 {
-            color: #2e7d32;
-            margin-bottom: 16px;
-            font-size: 26px;
-        }
-
-        p {
-            font-size: 15px;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        button:hover {
-            background-color: #388e3c;
-            transform: translateY(-2px);
-        }
+		.active {
+		    background-color: #14532d;}
     </style>
 </head>
 <body>
+    <!-- Sidebar Navigation -->
+    <div class="flex">
+        <div class="sidebar w-64 text-white p-6 shadow-lg">
+            <div class="flex items-center mb-8">
+                <span class="logo-icon">📦</span>
+               <h1 class="text-4xl font-semibold text-[#ffffff]">boîte</h1>
+            </div>
+            <nav class="space-y-4">
+                <a href="/admin/adminHome" class="flex items-center p-3 rounded-lg hover:bg-[#14532d] transition-colors active">
+                    <span class="mr-3 stat-icon">📊</span>
+                    <span class="sidebar-text">Dashboard</span>
+                </a>
+                <a href="/admin/purchase" class="flex items-center p-3 rounded-lg hover:bg-[#14532d] transition-colors">
+                    <span class="mr-3 stat-icon">🛒</span>
+                    <span class="sidebar-text">Make Purchase</span>
+                </a>
+                <a href="/admin/products" class="flex items-center p-3 rounded-lg hover:bg-[#14532d] transition-colors">
+                    <span class="mr-3 stat-icon">📦</span>
+                    <span class="sidebar-text">All Products</span>
+                </a>
+                <a href="/admin/invoices" class="flex items-center p-3 rounded-lg hover:bg-[#14532d] transition-colors">
+                    <span class="mr-3 stat-icon">📜</span>
+                    <span class="sidebar-text">Invoices</span>
+                </a>
+                <a href="/admin/vendor" class="flex items-center p-3 rounded-lg hover:bg-[#14532d] transition-colors">
+                    <span class="mr-3 stat-icon">👥</span>
+                    <span class="sidebar-text">Vendors</span>
+                </a>
+                <div class="divider"></div>
+                <a href="/logout" class="flex items-center p-3 rounded-lg hover:bg-[#14532d] transition-colors">
+                    <span class="mr-3 stat-icon">🚪</span>
+                    <span class="sidebar-text">Logout</span>
+                </a>
+            </nav>
+        </div>
 
-    <!-- Navigation Bar -->
-    <div class="navbar">
-         <a href="/admin/adminHome"><h2>Admin Dashboard</h2></a>
-        <div class="navbar-links">
-            <a href="/admin/purchase">Make Purchase</a>
-            <a href="/admin/products">View All Products</a>
-            <a href="/admin/invoices">View Invoices</a>
-			<a href="/admin/vendor"> Vendors</a>
-            <a href="/logout">Logout</a>
+        <!-- Header -->
+        <div class="header">
+            <div class="app-name">Admin Dashboard</div>
+            <div class="user-info">
+                <span>Admin User</span>
+                <div class="user-avatar">AU</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content flex-1 p-8 pt-24">
+            <div class="max-w-6xl mx-auto">
+                <h1 class="welcome-header text-3xl font-bold text-[#1a472a] mb-8 text-center">Admin Dashboard</h1>
+                <!-- Statistics Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="stat-card">
+                        <span class="stat-icon">🛒</span>
+                        <div>
+                            <p class="text-gray-600 text-sm">Today's Purchases</p>
+                            <p class="text-xl font-semibold text-[#1a472a]">12</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">📦</span>
+                        <div>
+                            <p class="text-gray-600 text-sm">Total Products</p>
+                            <p class="text-xl font-semibold text-[#1a472a]">248</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">📜</span>
+                        <div>
+                            <p class="text-gray-600 text-sm">Pending Invoices</p>
+                            <p class="text-xl font-semibold text-[#1a472a]">5</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">👥</span>
+                        <div>
+                            <p class="text-gray-600 text-sm">Active Vendors</p>
+                            <p class="text-xl font-semibold text-[#1a472a]">18</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Action Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="card p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-semibold text-[#1a472a] mb-2">Make a Purchase</h2>
+                        <p class="text-gray-600 mb-4">Manage your purchases efficiently from here.</p>
+                        <button onclick="window.location.href='/admin/purchase'" class="w-full py-2 px-4 bg-[#1a472a] text-white rounded-lg hover:bg-[#14532d] transition-colors">Go to Purchases</button>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-semibold text-[#1a472a] mb-2">All Products</h2>
+                        <p class="text-gray-600 mb-4">View and manage all available products.</p>
+                        <button onclick="window.location.href='/admin/products'" class="w-full py-2 px-4 bg-[#1a472a] text-white rounded-lg hover:bg-[#14532d] transition-colors">View Products</button>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-semibold text-[#1a472a] mb-2">Invoices</h2>
+                        <p class="text-gray-600 mb-4">Check all sales and purchase invoices.</p>
+                        <button onclick="window.location.href='/admin/invoices'" class="w-full py-2 px-4 bg-[#1a472a] text-white rounded-lg hover:bg-[#14532d] transition-colors">View Invoices</button>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-semibold text-[#1a472a] mb-2">Vendors</h2>
+                        <p class="text-gray-600 mb-4">Manage existing vendors or add new ones.</p>
+                        <button onclick="window.location.href='/admin/vendor'" class="w-full py-2 px-4 bg-[#1a472a] text-white rounded-lg hover:bg-[#14532d] transition-colors">Manage Vendors</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <!-- Dashboard Content -->
-    <div class="container">
-        <div class="card">
-            <h1>Welcome, Admin!</h1>
-            <p>Manage your purchases, products, and invoices efficiently from here.</p>
-            <button onclick="window.location.href='/purchase'">Make Purchase</button>
-        </div>
-
-        <div class="card">
-            <h1>View All Products</h1>
-            <p>Browse and manage the list of all available products in the system.</p>
-            <button onclick="window.location.href='/products'">View Products</button>
-        </div>
-
-        <div class="card">
-            <h1>View Invoices</h1>
-            <p>Access, review, and download all past and current invoices.</p>
-            <button onclick="window.location.href='/invoices'">View Invoices</button>
-        </div>
-		
-		<div class="card">
-		    <h1>Vendors</h1>
-		    <p>Add a Vendor or view existing vendors in the Inventory Management System.</p>
-		    <button onclick="window.location.href='/admin/vendor'">Vendors</button>
-		</div>
-    </div>
-
 </body>
 </html>
