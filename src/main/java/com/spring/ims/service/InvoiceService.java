@@ -45,8 +45,13 @@ public class InvoiceService {
         }
 
         // Update product quantity and price
+        double tempQty=product.getQuantity();
+        double tempPrice=product.getPrice();
+        double totAmount=tempQty*tempPrice;
+        totAmount+=quantity*price;
+        
         product.setQuantity(product.getQuantity() + quantity);
-        product.setPrice(price); // assuming price update is part of vendor supplying it
+        product.setPrice(totAmount/product.getQuantity()); // assuming price update is part of vendor supplying it
         productRepository.save(product);
 
         // Create Invoice

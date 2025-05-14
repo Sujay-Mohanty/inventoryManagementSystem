@@ -129,19 +129,24 @@
                 <th>Action</th>
             </tr>
         </thead>
-        <tbody>
-            <tr th:each="product : ${products}">
-                <td th:text="${product.name}">Product Name</td>
-                <td th:text="${product.description}">Description</td>
-                <td th:text="${product.quantity}">Qty</td>
-                <td th:text="${product.price}">Price</td>
-                <td>
-                    <a th:href="@{'/products/edit/' + ${product.id}}">
-                        <button class="edit-btn">Edit</button>
-                    </a>
-                </td>
-            </tr>
-        </tbody>
+		<tbody>
+		    <tr th:each="product : ${products}">
+		        <form th:action="@{'/products/update/' + ${product.id}}" method="post">
+		            <td>
+		                <input type="text" name="name" th:value="${product.name}" required />
+		            </td>
+		            <td>
+		                <input type="text" name="description" th:value="${product.description}" required />
+		            </td>
+		            <td th:text="${product.quantity}">Qty</td>
+		            <td th:text="${product.price}">Price</td>
+		            <td>
+		                <button type="submit" class="edit-btn">Save</button>
+		            </td>
+		        </form>
+		    </tr>
+		</tbody>
+
     </table>
 </div>
 

@@ -5,9 +5,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -159,5 +159,23 @@ public class AdminController {
 	        List<Product> products = productService.viewAll();
 	        model.addAttribute("products", products);
 	        return "viewProducts";
+	    }
+	    @PostMapping("/products/update/{id}")
+	    public String updateProduct(@PathVariable Long id,
+	                                @RequestParam String name,
+	                                @RequestParam String description,
+	                                RedirectAttributes redirectAttributes) {
+	        Optional<Product> optionalProduct = productService.findById(id);
+	        if (optionalProduct.isPresent()) {
+	            Product product = optionalProduct.get();
+	            product.setName(name);
+	            product.setDescription(description);
+	            productService.addProduct(product);
+	            redirectAttributes.addFlashAttribute("success", "Product updated successfully.");
+	        } else {
+	            redirectAttributes.addFlashAttribute("error", "Product not found.");
+	        }
+
+	        return "redirect:/admin/products";
 	    }
 }
