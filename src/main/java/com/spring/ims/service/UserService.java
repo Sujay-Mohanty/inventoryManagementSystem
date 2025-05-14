@@ -1,5 +1,7 @@
 package com.spring.ims.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,11 @@ public class UserService {
 	
 	public User findByEmailAndPassword(User user) {
 		return userRepository.findByEmailAndPassword(user.getEmail(),user.getPassword());
+	}
+
+	public Optional<User> findByName(String name) {
+		// TODO Auto-generated method stub
+		return userRepository.findByName(name);
 	}
 	
 	

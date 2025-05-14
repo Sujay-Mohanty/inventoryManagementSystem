@@ -1,6 +1,10 @@
 package com.spring.ims.controller;
 
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,10 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.spring.ims.entity.Cart;
+import com.spring.ims.entity.Invoice;
 import com.spring.ims.entity.Product;
 import com.spring.ims.entity.User;
 import com.spring.ims.service.CartService;
+import com.spring.ims.service.InvoiceService;
 import com.spring.ims.service.ProductService;
+import com.spring.ims.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -29,8 +37,19 @@ public class UserController {
 	@Autowired
 	CartService cartService;
 	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	InvoiceService invoiceService;
+	
 	@GetMapping("/products")
-    public String viewAllProducts(Model model) {
+    public String viewAllProducts(HttpSession session,Model model) {
+	    User loggedInUser = (User) session.getAttribute("loggedInUser");
+
+	    if (loggedInUser == null) {
+	        return "redirect:/login"; // User not logged in
+	    }
         List<Product> products = productService.viewAll();
         model.addAttribute("products", products);
         return "viewProductUser";
@@ -43,7 +62,7 @@ public class UserController {
 	    model.addAttribute("user", user);
 	    return "userHome";
 	}
-	@PostMapping("/user/cart/add/{productId}")
+	@PostMapping("/cart/add/{productId}")
 	public String addToCart(@PathVariable Long productId,
 	                        @RequestParam int quantity,
 	                        HttpSession session,
@@ -64,4 +83,58 @@ public class UserController {
 
 	    return "redirect:/user/products";
 	}
+	
+	// View cart
+    @GetMapping("/cart")
+    public String viewCart(Model model, HttpSession session) {
+    	User loggedInUser = (User) session.getAttribute("loggedInUser");
+    	 if (loggedInUser == null) {
+ 	        return "redirect:/login"; // User not logged in
+ 	    }
+        String username = loggedInUser.getName();
+        User user = userService.findByName(username).get();
+        Cart cart = cartService.getCartByUser(user).get();
+
+        double totalAmount = cart.getItems().stream()
+                .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
+                .sum();
+
+        model.addAttribute("cart", cart);
+        model.addAttribute("totalAmount", totalAmount);
+        return "viewCart";
+    }
+    @PostMapping("/cart/placeOrder")
+    public String placeOrder(HttpSession session) {
+    	User loggedInUser = (User) session.getAttribute("loggedInUser");
+   	 if (loggedInUser == null) {
+	        return "redirect:/login"; // User not logged in
+	    }
+//       String username = loggedInUser.getName();
+//        User user = userService.findByUsername(username);
+        invoiceService.createSalesInvoice(loggedInUser); // replaced orderService
+        return "redirect:/user/orders";
+    }
+    
+    @GetMapping("/orders")
+    public String viewUserOrders(Model model, HttpSession session) {
+    	User loggedInUser = (User) session.getAttribute("loggedInUser");
+      	 if (loggedInUser == null) {
+   	        return "redirect:/login"; // User not logged in
+   	    }
+
+        List<Invoice> salesInvoices = invoiceService.findByUserAndType(loggedInUser, "SALES");
+
+        List<Map<String, Object>> invoiceData = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+        for (Invoice invoice : salesInvoices) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("invoice", invoice);
+            map.put("formattedDate", invoice.getDateTime().format(formatter));
+            invoiceData.add(map);
+        }
+
+        model.addAttribute("invoiceData", invoiceData);
+        return "viewOrders";
+    }
 }

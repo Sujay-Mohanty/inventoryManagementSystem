@@ -27,9 +27,9 @@ public class CartService {
 	@Autowired
 	private ProductRepository productRepository;
 	
-	public void addProductToCart(String username, Long productId, int quantity) {
+	public void addProductToCart(String email, Long productId, int quantity) {
 	    // 1. Fetch user and product from repositories
-	    User user = userRepository.findByName(username)
+	    User user = userRepository.findByEmail(email)
 	                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
 	    Product product = productRepository.findById(productId)
@@ -67,5 +67,10 @@ public class CartService {
 	    productRepository.save(product);
 
 	    cartRepository.save(cart); // cascades to CartItems if set up
+	}
+
+	public Optional<Cart> getCartByUser(User user) {
+		// TODO Auto-generated method stub
+		return cartRepository.findByUser(user);
 	}
 }

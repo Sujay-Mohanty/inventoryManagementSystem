@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Orders</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0fdf4;
+            margin: 0;
+        }
+
+        .navbar {
+            background-color: #4caf50;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .navbar a:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .invoice-card {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            padding: 30px;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .invoice-type {
+            background-color: #4caf50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .total-price {
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .no-orders {
+            text-align: center;
+            color: #777;
+            font-size: 18px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a href="/user/userHome"><h2>User Dashboard</h2></a>
+    <div class="navbar-links">
+        <a href="/user/products">All Products</a>
+        <a href="/user/orders">Previous Orders</a>
+        <a href="/user/cart">Cart</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <h1 style="text-align:center; color:#2e7d32;">Your Orders</h1>
+
+    <div th:if="${invoiceData.size() == 0}" class="no-orders">
+        <p>You have not placed any orders yet.</p>
+    </div>
+
+    <div th:each="invoiceMap : ${invoiceData}" class="invoice-card">
+        <div class="invoice-header">
+            <h3 th:text="'Invoice ID: #' + ${invoiceMap.invoice.id}"></h3>
+            <span class="invoice-type" th:text="${invoiceMap.invoice.type}">Type</span>
+        </div>
+
+        <p><strong>Customer:</strong> <span th:text="${invoiceMap.invoice.user.name}"></span></p>
+        <p><strong>Date:</strong> <span th:text="${invoiceMap.formattedDate}"></span></p>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Product</th>
+                <th>Unit Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${invoiceMap.invoice.items}">
+                <td th:text="${item.product.name}"></td>
+                <td th:text="${item.unitPrice} + ' ₹'"></td>
+                <td th:text="${item.quantity}"></td>
+                <td th:text="${item.unitPrice * item.quantity} + ' ₹'"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p class="total-price">Total: <span th:text="${invoiceMap.invoice.price} + ' ₹'"></span></p>
+    </div>
+</div>
+
+</body>
+</html>

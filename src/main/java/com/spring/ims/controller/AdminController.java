@@ -102,16 +102,16 @@ public class AdminController {
 	        return "purchaseOrder";
 	    }
 
-	    @PostMapping("/purchase/add")
-	    public String handlePurchaseOrder(
-	            @RequestParam Long vendorId,
-	            @RequestParam int quantity,
-	            @RequestParam double price,
-	            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime purchaseDate) {
+	 @PostMapping("/purchase/add")
+	 public String handlePurchaseOrder(
+	         @RequestParam Long vendorId,
+	         @RequestParam int quantity,
+	         @RequestParam double price) {
 
-	        invoiceService.createPurchaseInvoice(vendorId, quantity, price, purchaseDate);
-	        return "redirect:/admin/adminHome";
-	    }
+	     LocalDateTime purchaseDate = LocalDateTime.now(); // current timestamp
+	     invoiceService.createPurchaseInvoice(vendorId, quantity, price, purchaseDate);
+	     return "redirect:/admin/adminHome";
+	 }
 	    @GetMapping("/vendor/{vendorId}/product")
 	    @ResponseBody
 	    public ResponseEntity<Product> getProductByVendor(@PathVariable Long vendorId) {
@@ -123,11 +123,24 @@ public class AdminController {
 	    public String viewInvoices(Model model) {
 	        List<Invoice> invoices = invoiceService.findAll();
 
-	        // Format each invoice's dateTime to a string
 	        List<Map<String, Object>> invoiceData = invoices.stream().map(invoice -> {
 	            Map<String, Object> map = new HashMap<>();
 	            map.put("invoice", invoice);
 	            map.put("formattedDate", invoice.getDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+
+	            // Add entity name based on type (vendor or user)
+	            String name = invoice.getType().equalsIgnoreCase("PURCHASE") && invoice.getVendor() != null
+	                    ? invoice.getVendor().getName()
+	                    : invoice.getUser() != null ? invoice.getUser().getName() : "N/A";
+
+	            map.put("entityName", name); // for display as vendor/customer name in the view
+
+	            // Optional: Compute total from items (for safety in case invoice.price is missing or misaligned)
+	            double total = invoice.getItems().stream()
+	                    .mapToDouble(item -> item.getUnitPrice() * item.getQuantity())
+	                    .sum();
+	            map.put("calculatedTotal", total); // fallback if needed
+
 	            return map;
 	        }).toList();
 
